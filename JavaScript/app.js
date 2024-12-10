@@ -86,8 +86,11 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
         }
 
 
-        console.log(selectionOfDice); // Debugging
-        console.log(findMelds(diceSelection())); // Debugging
+        // console.log(selectionOfDice); // Debugging
+        // console.log(findMelds(diceSelection())); // Debugging
+        const occurrenceOfValue = diceSelection();
+        isValidMeld(findMelds(occurrenceOfValue),occurrenceOfValue);
+
     });
 });
 
@@ -97,7 +100,7 @@ function diceSelection(){
     // step 1 : formatting
     const values = Object.values(selectionOfDice).map(Number); //return an array of number. These are values of dice
     // occurrence of value store a dictionary with the frequency of dice value used to calculate score
-    const occurrenceOfValue = {};
+    const occurrenceOfValue = {1:0,2:0,3:0,4:0,5:0,6:0};
     values.forEach(value => {
         occurrenceOfValue[value] = (occurrenceOfValue[value] || 0) + 1;//check if already there is an occurrence
         // this step is necessary because it prevents error like undefined + 1 = NaN
@@ -127,38 +130,59 @@ function findMelds(occurrenceOfValue){
         }
     });
     if(isRun){
-        melds.push({ type: 'Run', score: 3000 });
+        melds.push({ type: 'Run',diceCount:6,  score: 3000 });
     }
     else if(pairCount === 3){
-        melds.push({ type: 'Triple Pairs', score: 2000 });
+        melds.push({ type: 'Triple Pairs',diceCount:6, score: 2000 });
     }
     else if(isSixer){
-        melds.push({ type: 'Six Of A Kind', score: 2500 });
+        melds.push({ type: 'Six Of A Kind',diceCount:6, score: 2500 });
     }
     else{
         Object.keys(occurrenceOfValue).forEach((valueStr) => {
             const count = occurrenceOfValue[valueStr];
             if(count === 5){
-                melds.push({ type: 'Five of a kind', score: 2000 });
-                occurrenceOfValue[valueStr] -=5;
+                melds.push({ type: 'Five of a kind',diceCount:5, score: 2000 });
+                // occurrenceOfValue[valueStr] -=5;
             }
             if(count === 4){
-                melds.push({ type: 'Four of a kind', score: 1500 });
-                occurrenceOfValue[valueStr] -=4;
+                melds.push({ type: 'Four of a kind',diceCount:4, score: 1500 });
+                // occurrenceOfValue[valueStr] -=4;
             }
             if (count === 3){
-                melds.push({ type: `Triple ${valueStr}`, score: scoringRules.triple[valueStr] });
-                occurrenceOfValue[valueStr] -=3;
+                melds.push({ type: `Triple ${valueStr}`,diceCount:3, score: scoringRules.triple[valueStr] });
+                // occurrenceOfValue[valueStr] -=3;
             }
             if (count === 2 && scoringRules.doubles[valueStr]) {
-                melds.push({ type: `Double ${valueStr}`, score: scoringRules.doubles[valueStr] });
-                occurrenceOfValue[valueStr] -=2;
+                melds.push({ type: `Double ${valueStr}`,diceCount:2, score: scoringRules.doubles[valueStr] });
+                // occurrenceOfValue[valueStr] -=2;
             }
             if (count === 1 && scoringRules.single[valueStr]){
-                melds.push({ type: `Single ${valueStr}`, score: scoringRules.single[valueStr] });
-                occurrenceOfValue[valueStr] -=1;
+                melds.push({ type: `Single ${valueStr}`,diceCount:1, score: scoringRules.single[valueStr] });
+                // occurrenceOfValue[valueStr] -=1;
             }
         });
     }
     return melds
+}
+function isValidMeld(meld,occurrenceOfValue){
+    const playerSelectionCount = Object.values(occurrenceOfValue).reduce((sum, count) => sum + count, 0);
+
+    // Using reduce to sum diceCount and score
+    const meldCount = meld.reduce((acc, obj) => {
+        acc.diceCount += obj.diceCount;
+        acc.score += obj.score;
+        return acc;
+    }, { diceCount: 0, score: 0 });
+
+    if(meldCount.diceCount === playerSelectionCount){
+        console.log(meldCount.score);
+    }
+    else {
+        console.log("Invalid Selection");
+        // console.log("Score "+meldCount.score);
+        // console.log("Meld Dice Count  "+meldCount.diceCount);
+        // console.log("Total Player Selection Count  "+playerSelectionCount);
+    }
+
 }
