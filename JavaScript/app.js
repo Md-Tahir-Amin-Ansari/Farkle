@@ -1,8 +1,9 @@
-
+let playerSelectionCount =0;
 let numberOfDices = 6;
 let selectionOfDice = {};
 let roundScore = 0;
 let tempScore = 0;
+let isFarkle = false;
 let totalScorePlayer1 = 0;
 let totalScorePlayer1DOM = document.getElementById("playerOneScore");
 let totalScorePlayer2 = 0;
@@ -20,6 +21,7 @@ const scoringRules = {
 document.getElementById("rollDice").addEventListener("click", rollDice);
 function rollDice() {
     // console.log("Clicked");
+    let throwCount = {1:0,2:0,3:0,4:0,5:0,6:0};
     resetTiles(0);
     let diceTiles = shuflleTiles(numberOfDices);//these are the tiles randomly chosen to have a die
     // console.log(diceTile);
@@ -29,15 +31,19 @@ function rollDice() {
         const tile = document.getElementById(`tile${tileNo}`);//gets the i th tile from randomly chosen 6 tiles
         const roll = Math.floor(Math.random() * 6) + 1;
         tile.dataset.value = roll;
+        throwCount[roll]++;
         // console.log(dice.dataset.value);
         // console.log("dice face "+roll);
         tile.style.backgroundImage = `url('Dice/dice ${roll}.webp')`;
         tile.style.transform = `rotate(${Math.random() * 360}deg)`;
     }
-}
-document.getElementById("rollDice").addEventListener("click", holdDice);
-function holdDice() {
-
+    // console.log(throwCount);
+    if(findMelds(throwCount)===0){
+        // console.log("farkle")
+        isFarkle = true;
+        alert("Farkle!");
+        bankScore();
+    }
 }
 //shuffled dice tile return an array of shuffled array of int corresponding dies tile
 
@@ -73,13 +79,35 @@ function resetTiles(tileNumber){
     }
 
 }
-document.getElementById("bankScore").addEventListener("click", ()=>{
-    if(tempScore > 0){
+document.getElementById("bankScore").addEventListener("click",bankScore );
+function bankScore() {
+    if(tempScore >0){
         totalScorePlayer1 += tempScore+roundScore;
         roundScore = 0;
         tempScore = 0;
         totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
         roundScoreDOM.innerHTML = 0;
+        numberOfDices =6;
+        alert("Next Player!");
+        resetTiles(0);
+    }
+    if (isFarkle){
+        isFarkle = false;
+        roundScore = 0;
+        tempScore = 0;
+        roundScoreDOM.innerHTML = 0;
+        numberOfDices =6;
+        alert("Next Player!");
+        resetTiles(0);
+    }
+}
+document.getElementById("holdDice").addEventListener("click", ()=>{
+    if(tempScore > 0){
+        roundScore += tempScore;
+        tempScore = 0;
+        roundScoreDOM.innerHTML = roundScore;
+        numberOfDices -=playerSelectionCount;
+        rollDice();
     }
 });
 
@@ -178,10 +206,15 @@ function findMelds(occurrenceOfValue){
             }
         });
     }
-    return melds
+    if (melds.length === 0){
+        return 0;
+    }
+    else {
+        return melds;
+    }
 }
 function isValidMeld(meld,occurrenceOfValue){
-    const playerSelectionCount = Object.values(occurrenceOfValue).reduce((sum, count) => sum + count, 0);
+    playerSelectionCount = Object.values(occurrenceOfValue).reduce((sum, count) => sum + count, 0);
 
     // Using reduce to sum diceCount and score
     const meldCount = meld.reduce((acc, obj) => {
