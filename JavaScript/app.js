@@ -2,8 +2,11 @@
 let numberOfDices = 6;
 let selectionOfDice = {};
 let roundScore = 0;
+let tempScore = 0;
 let totalScorePlayer1 = 0;
+let totalScorePlayer1DOM = document.getElementById("playerOneScore");
 let totalScorePlayer2 = 0;
+let roundScoreDOM = document.getElementById("roundScore");
 const scoringRules = {
     single: { 1: 100, 5: 50 }, // Single 1 and 5 have specific scores
     doubles: {1:200, 5:100},
@@ -32,7 +35,10 @@ function rollDice() {
         tile.style.transform = `rotate(${Math.random() * 360}deg)`;
     }
 }
+document.getElementById("rollDice").addEventListener("click", holdDice);
+function holdDice() {
 
+}
 //shuffled dice tile return an array of shuffled array of int corresponding dies tile
 
 function shuflleTiles(numberOfDices){
@@ -67,7 +73,15 @@ function resetTiles(tileNumber){
     }
 
 }
-
+document.getElementById("bankScore").addEventListener("click", ()=>{
+    if(tempScore > 0){
+        totalScorePlayer1 += tempScore+roundScore;
+        roundScore = 0;
+        tempScore = 0;
+        totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
+        roundScoreDOM.innerHTML = 0;
+    }
+});
 
 document.querySelectorAll('.tile').forEach(tile => {//Node value
     tile.addEventListener('click', () => {
@@ -89,10 +103,11 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
         // console.log(selectionOfDice); // Debugging
         // console.log(findMelds(diceSelection())); // Debugging
         const occurrenceOfValue = diceSelection();
-        isValidMeld(findMelds(occurrenceOfValue),occurrenceOfValue);
-
+        tempScore = isValidMeld(findMelds(occurrenceOfValue), occurrenceOfValue);
+        roundScoreDOM.innerHTML = roundScore + tempScore;
     });
 });
+
 
 // Step 2: Analyze the Player's Selection
 // dice Selection returns the frequency of each dice in player's selection
@@ -175,14 +190,11 @@ function isValidMeld(meld,occurrenceOfValue){
         return acc;
     }, { diceCount: 0, score: 0 });
 
-    if(meldCount.diceCount === playerSelectionCount){
-        console.log(meldCount.score);
+    if (meldCount.diceCount === playerSelectionCount) {
+        return meldCount.score;
     }
     else {
-        console.log("Invalid Selection");
-        // console.log("Score "+meldCount.score);
-        // console.log("Meld Dice Count  "+meldCount.diceCount);
-        // console.log("Total Player Selection Count  "+playerSelectionCount);
+        return 0;
     }
 
 }
