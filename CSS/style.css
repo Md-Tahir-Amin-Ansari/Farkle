@@ -5,7 +5,7 @@
     list-style-type: none;
 }
 html{
-    background: url('../images/board-image.webp') no-repeat center center fixed;
+    background: url('../Images/board-image.webp') no-repeat center center fixed;
     background-size: cover;
     height: 100%;
     font-size: 16px; /* Establishes 1rem = 16px */
