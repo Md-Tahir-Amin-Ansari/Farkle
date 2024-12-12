@@ -195,7 +195,7 @@ function aiMove() {
     if(numberOfDices - meldCount.diceCount ===0){ //this means a hot die which makes holding a no-brainer for AI
         aiSelect(diceTiles);
     }
-    // console.log(melds)
+
     //if after selecting meld >=4 dice left or 0 dice (run, triple pairs, six of a kind and hot die) left = re - roll;
     //if after selecting meld <4 dice left = bank;
 // At the end of AI move, switch back to human player
