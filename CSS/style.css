@@ -38,6 +38,7 @@ h1, h2, h3, p, li{
     display: flex;
     justify-content: center;
     align-items: center;
+/*    tt*/
 }
 .reserveArea{
     color: white;
