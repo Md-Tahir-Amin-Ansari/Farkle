@@ -1,3 +1,7 @@
+//TODO
+// 1 Create rollDice  Dice tileID variable to also store each dice type tile id
+
+
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
 let playerSelectionCount =0;
@@ -21,6 +25,7 @@ const scoringRules = {
     fiveOfAKind: 2000,
     sixOfAKind: 3000,
 };
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 // document.getElementById("rollDice").addEventListener("click", rollDice);
 function rollDice() {
     // console.log("Clicked");
@@ -33,6 +38,7 @@ function rollDice() {
     }
     else{
         let throwCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+        let tilePositionByDice = {1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
         resetTiles(0);
         let diceTiles = shuflleTiles(numberOfDices);//these are the tiles randomly chosen to have a die
         // console.log(diceTile);
@@ -43,6 +49,7 @@ function rollDice() {
             const roll = Math.floor(Math.random() * 6) + 1;
             tile.dataset.value = roll;
             throwCount[roll]++;
+            tilePositionByDice[roll].push(tileNo);
             // console.log(dice.dataset.value);
             // console.log("dice face "+roll);
             tile.style.backgroundImage = `url('Dice/dice ${roll}.webp')`;
@@ -50,13 +57,14 @@ function rollDice() {
 
         }
         // console.log(throwCount);
-        if (findMelds(throwCount).length === 0) {
+        let melds = findMelds(throwCount);
+        if (melds.length === 0) {
             // console.log("farkle")
             isFarkle = true;
             alert("Farkle!");
             bankScore();
         }
-        return throwCount;
+        return {throwCount,tilePositionByDice,diceTiles,melds};
     }
 }
 //shuffled dice tile return an array of shuffled array of int corresponding dies tile
@@ -120,7 +128,8 @@ function bankScore() {
     }
 }
 
-document.getElementById("rollDice").addEventListener("click", () => {
+document.getElementById("rollDice").addEventListener("click", roll);
+function roll(){
     if (firstThrow) {
         rollDice();
         firstThrow = false;
@@ -132,7 +141,7 @@ document.getElementById("rollDice").addEventListener("click", () => {
         numberOfDices -= playerSelectionCount;
         rollDice();
     }
-});
+}
 
 
 
@@ -176,14 +185,29 @@ function switchPlayer() {
 function aiMove() {
     console.log("AI's Move");
 // Your AI logic here
-    const throwCount =rollDice();
-    // console.log(throwCount);
 
+    const {throwCount,tilePositionByDice,diceTiles,melds} = rollDice();
+    const meldCount = melds.reduce((acc, obj) => {
+        acc.diceCount += obj.diceCount;
+        acc.score += obj.score;
+        return acc;
+    }, { diceCount: 0, score: 0 });
+    if(numberOfDices - meldCount.diceCount ===0){ //this means a hot die which makes holding a no-brainer for AI
+        aiSelect(diceTiles);
+    }
+    // console.log(melds)
+    //if after selecting meld >=4 dice left or 0 dice (run, triple pairs, six of a kind and hot die) left = re - roll;
+    //if after selecting meld <4 dice left = bank;
 // At the end of AI move, switch back to human player
     switchPlayer();
 }
 
-
+async function aiSelect(tiles){
+    for (const tile of tiles) {
+        document.getElementById(`tile${tile}`).classList.add("tileHighlighted");
+        await sleep(500);
+    }
+}
 // Step 2: Analyze the Player's Selection
 // dice Selection returns the frequency of each dice in player's selection
 function diceSelection(){
@@ -232,23 +256,23 @@ function findMelds(occurrenceOfValue){
         Object.keys(occurrenceOfValue).forEach((valueStr) => {
             const count = occurrenceOfValue[valueStr];
             if(count === 5){
-                melds.push({ type: 'Five of a kind',diceCount:5, score: 2000 });
+                melds.push({ type: 'Five of a kind',dice: valueStr,diceCount:5, score: 2000 });
                 // occurrenceOfValue[valueStr] -=5;
             }
             if(count === 4){
-                melds.push({ type: 'Four of a kind',diceCount:4, score: 1500 });
+                melds.push({ type: 'Four of a kind',dice: valueStr,diceCount:4, score: 1500 });
                 // occurrenceOfValue[valueStr] -=4;
             }
             if (count === 3){
-                melds.push({ type: `Triple ${valueStr}`,diceCount:3, score: scoringRules.triple[valueStr] });
+                melds.push({ type: `Triple ${valueStr}`,dice: valueStr,diceCount:3, score: scoringRules.triple[valueStr] });
                 // occurrenceOfValue[valueStr] -=3;
             }
             if (count === 2 && scoringRules.doubles[valueStr]) {
-                melds.push({ type: `Double ${valueStr}`,diceCount:2, score: scoringRules.doubles[valueStr] });
+                melds.push({ type: `Double ${valueStr}`,dice: valueStr,diceCount:2, score: scoringRules.doubles[valueStr] });
                 // occurrenceOfValue[valueStr] -=2;
             }
             if (count === 1 && scoringRules.single[valueStr]){
-                melds.push({ type: `Single ${valueStr}`,diceCount:1, score: scoringRules.single[valueStr] });
+                melds.push({ type: `Single ${valueStr}`,dice: valueStr,diceCount:1, score: scoringRules.single[valueStr] });
                 // occurrenceOfValue[valueStr] -=1;
             }
         });
