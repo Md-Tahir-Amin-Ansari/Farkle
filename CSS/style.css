@@ -5,7 +5,7 @@
     list-style-type: none;
 }
 html{
-    background: url('../images/board-image.jpg') no-repeat center center fixed;
+    background: url('../images/board-image.webp') no-repeat center center fixed;
     background-size: cover;
     height: 100%;
     font-size: 16px; /* Establishes 1rem = 16px */
@@ -34,7 +34,7 @@ h1, h2, h3, p, li{
 #boardOutside{
     width: 60rem;
     height: 40rem;
-    background: url('../Images/play-board.png') no-repeat center/cover;
+    background: url('../Images/play-board.webp') no-repeat center/cover;
     display: flex;
     justify-content: center;
     align-items: center;
