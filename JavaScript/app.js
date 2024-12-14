@@ -31,7 +31,11 @@ function rollDice() {
         alert("Hot Dice!");//A hot dice happens when you have selected all your active dice and are not farkled
         //After a hot dice you get back all your dice back and roll again
         tempScore =0;
-        rollDice();
+        if(currentPlayer===0) {
+            rollDice();
+        }else {
+            aiMove();
+        }
     }
     else{
         let throwCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
@@ -99,25 +103,55 @@ function resetTiles(tileNumber){
 
 }
 document.getElementById("bankScore").addEventListener("click",bankScore );
+// function bankScore() {
+//     if(tempScore >0){
+//         totalScorePlayer1 += tempScore+roundScore;
+//         roundScore = 0;
+//         tempScore = 0;
+//         totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
+//         roundScoreDOM.innerHTML = 0;
+//         numberOfDices =6;
+//         alert("Next Player!");
+//         resetTiles(0);
+//         firstThrow = true;
+//         switchPlayer();
+//     }
+//     if (isFarkle){
+//         isFarkle = false;
+//         roundScore = 0;
+//         tempScore = 0;
+//         roundScoreDOM.innerHTML = 0;
+//         numberOfDices =6;
+//         alert("Next Player!");
+//         resetTiles(0);
+//         firstThrow = true;
+//         switchPlayer();
+//     }
+// }
 function bankScore() {
-    if(tempScore >0){
-        totalScorePlayer1 += tempScore+roundScore;
+    if (tempScore > 0) {
+        if (currentPlayer === 1) {
+            totalScoreAI += tempScore + roundScore;
+            totalScoreAIDOM.innerHTML = totalScoreAI;
+        } else {
+            totalScorePlayer1 += tempScore + roundScore;
+            totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
+        }
         roundScore = 0;
         tempScore = 0;
-        totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
+        numberOfDices = 6;
         roundScoreDOM.innerHTML = 0;
-        numberOfDices =6;
         alert("Next Player!");
         resetTiles(0);
         firstThrow = true;
         switchPlayer();
     }
-    if (isFarkle){
+    if (isFarkle) {
         isFarkle = false;
         roundScore = 0;
         tempScore = 0;
         roundScoreDOM.innerHTML = 0;
-        numberOfDices =6;
+        numberOfDices = 6;
         alert("Next Player!");
         resetTiles(0);
         firstThrow = true;
@@ -125,18 +159,33 @@ function bankScore() {
     }
 }
 
+
 document.getElementById("rollDice").addEventListener("click", roll);
 function roll(){
     if (firstThrow) {
         rollDice();
         firstThrow = false;
     }
-    if (tempScore > 0) {
-        roundScore += tempScore;
-        tempScore = 0;
-        roundScoreDOM.innerHTML = roundScore;
-        numberOfDices -= playerSelectionCount;
-        rollDice();
+    if(currentPlayer === 0){
+        if (tempScore > 0) {
+            roundScore += tempScore;
+            tempScore = 0;
+            roundScoreDOM.innerHTML = roundScore;
+            numberOfDices -= playerSelectionCount;
+            playerSelectionCount =0;
+            rollDice();
+        }
+    }
+    else {
+        if (tempScore > 0) {
+            roundScore += tempScore;
+            tempScore = 0;
+            roundScoreDOM.innerHTML = roundScore;
+            numberOfDices -= playerSelectionCount;
+            playerSelectionCount =0;
+            aiMove();
+        }
+
     }
 }
 
@@ -174,34 +223,29 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
 });
 function switchPlayer() {
     currentPlayer = (currentPlayer === 0) ? 1 : 0;
+    console.log(currentPlayer);
     if (currentPlayer === 1) {
         setTimeout(aiMove, 1000); // Add delay to simulate AI thinking
     }
 }
 
 async function aiMove() {
-    console.log("AI's Move");
 // Your AI logic here
 
     const {throwCount,tilePositionByDice,diceTiles,melds} = rollDice();
+    // console.log("throw count"+throwCount+"tilePositionDice"+tilePositionByDice+"dice tiles"+diceTiles+"melds"+melds);
     const meldCount = melds.reduce((acc, obj) => {
         acc.diceCount += obj.diceCount;
         acc.score += obj.score;
         return acc;
     }, { diceCount: 0, score: 0 });
-    let tiles = [];
-    // melds.forEach((meld) =>{
-    //     tiles.push(...tilePositionByDice[meld.dice]);
-    //     // console.log(meld.dice);
-    //     // console.log(tilePositionByDice[meld.dice]);
-    //     console.log(tiles);
-    // });
     tempScore =0;
-    if(numberOfDices - meldCount.diceCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
+    playerSelectionCount = meldCount.diceCount;
+    if(numberOfDices - playerSelectionCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
         await aiSelect(diceTiles);
         tempScore =meldCount.score;
         console.log("ai: "+tempScore);
-        bankScore();
+        roll();
         // console.log(diceTiles);
     }
     else {
@@ -212,12 +256,12 @@ async function aiMove() {
             // console.log(tilePositionByDice[meld.dice]);
             console.log(tiles);
         });
-        if(numberOfDices - meldCount.diceCount >3){
+        if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
             await aiSelect(tiles);
             // console.log(tiles);
             tempScore =meldCount.score;
             console.log("ai: "+tempScore);
-            bankScore();
+            roll();
         }
         else {
             await aiSelect(tiles);
