@@ -1,6 +1,3 @@
-//TODO
-// 1 Create rollDice  Dice tileID variable to also store each dice type tile id
-
 
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
@@ -170,7 +167,7 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
             const occurrenceOfValue = diceSelection();
             tempScore = 0;
             tempScore = isValidMeld(findMelds(occurrenceOfValue), occurrenceOfValue);
-            console.log(tempScore);
+            // console.log(tempScore);
             roundScoreDOM.innerHTML = roundScore + tempScore;
         }
     });
@@ -182,7 +179,7 @@ function switchPlayer() {
     }
 }
 
-function aiMove() {
+async function aiMove() {
     console.log("AI's Move");
 // Your AI logic here
 
@@ -192,17 +189,52 @@ function aiMove() {
         acc.score += obj.score;
         return acc;
     }, { diceCount: 0, score: 0 });
-    if(numberOfDices - meldCount.diceCount ===0){ //this means a hot die which makes holding a no-brainer for AI
-        aiSelect(diceTiles);
+    let tiles = [];
+    // melds.forEach((meld) =>{
+    //     tiles.push(...tilePositionByDice[meld.dice]);
+    //     // console.log(meld.dice);
+    //     // console.log(tilePositionByDice[meld.dice]);
+    //     console.log(tiles);
+    // });
+    tempScore =0;
+    if(numberOfDices - meldCount.diceCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
+        await aiSelect(diceTiles);
+        tempScore =meldCount.score;
+        console.log("ai: "+tempScore);
+        bankScore();
+        // console.log(diceTiles);
+    }
+    else {
+        let tiles = [];
+        melds.forEach((meld) =>{
+            tiles.push(...tilePositionByDice[meld.dice]);
+            // console.log(meld.dice);
+            // console.log(tilePositionByDice[meld.dice]);
+            console.log(tiles);
+        });
+        if(numberOfDices - meldCount.diceCount >3){
+            await aiSelect(tiles);
+            // console.log(tiles);
+            tempScore =meldCount.score;
+            console.log("ai: "+tempScore);
+            bankScore();
+        }
+        else {
+            await aiSelect(tiles);
+            // console.log(tiles);
+            tempScore =meldCount.score;
+            console.log("ai: "+tempScore);
+            bankScore();
+        }
     }
 
     //if after selecting meld >=4 dice left or 0 dice (run, triple pairs, six of a kind and hot die) left = re - roll;
     //if after selecting meld <4 dice left = bank;
 // At the end of AI move, switch back to human player
-    switchPlayer();
 }
 
 async function aiSelect(tiles){
+    await sleep(500);
     for (const tile of tiles) {
         document.getElementById(`tile${tile}`).classList.add("tileHighlighted");
         await sleep(500);
