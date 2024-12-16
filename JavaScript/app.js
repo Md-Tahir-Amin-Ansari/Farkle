@@ -1,4 +1,3 @@
-
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
 let playerSelectionCount =0;
@@ -61,8 +60,15 @@ async function rollDice() {
     if (melds.length === 0) {
         await sleep(1000);
         isFarkle = true;
-        alert("Farkle!");
+        if (currentPlayer===0){
+            await showNotification("😢", "Farkle! No valid melds.");
+        }
+        else {
+            await showNotification("🤖", "Ai Farkled!");
+        }
+
         bankScore();
+        return;
     }
     return {throwCount, tilePositionByDice, diceTiles, melds};
 
@@ -103,8 +109,8 @@ function resetTiles(tileNumber){
 
 }
 document.getElementById("bankScore").addEventListener("click",bankScore );
-function bankScore() {
-    if (tempScore > 0) {
+async function bankScore() {
+    if (tempScore > 0) {//this is because a farkle only happens when temp score is zero so in case of farkle it won't trigger
         if (currentPlayer === 1) {
             totalScoreAI += tempScore + roundScore;
             totalScoreAIDOM.innerHTML = totalScoreAI;
@@ -117,8 +123,7 @@ function bankScore() {
         numberOfDices = 6;
         roundScoreDOM.innerHTML = 0;
         resetTiles(0);
-        if(!checkWinningCondition()){
-            alert("Next Player!");
+        if (!checkWinningCondition()) {//because a victory only happens in a successful bank not on farkle
             firstThrow = true;
             switchPlayer();
         }
@@ -130,11 +135,8 @@ function bankScore() {
         roundScoreDOM.innerHTML = 0;
         numberOfDices = 6;
         resetTiles(0);
-        if(!checkWinningCondition()){
-            alert("Next Player!");
-            firstThrow = true;
-            switchPlayer();
-        }
+        firstThrow = true;
+        switchPlayer();
     }
 }
 
@@ -156,7 +158,7 @@ function roll(){
                 numberOfDices = 6;
                 //A hot dice happens when you have selected all your active dice and are not farkled
                 //After a hot dice you get back all your dice back and roll again
-                alertDOM.innerHTML = "HOT DICE!";
+                alertDOM.innerHTML = "HOT DICE!🔥🔥";
                 tempScore =0;
             }
             rollDice();
@@ -213,14 +215,15 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
         }
     });
 });
-function switchPlayer() {
+async function switchPlayer() {
     currentPlayer = (currentPlayer === 0) ? 1 : 0;
     console.log(currentPlayer);
-    if(currentPlayer === 1){
+    if (currentPlayer === 1) {
+        await showNotification("🤖", "Ai's Turn");
         aiMove();
-    }
-    else {
-        alertDOM.innerHTML = "Your Turn";
+    } else {
+        alertDOM.innerHTML = "😊 Your Turn";
+        await showNotification("😊", "Your Turn");
     }
 }
 
@@ -230,7 +233,7 @@ async function aiMove() {
     await sleep(1000);
     const {throwCount,tilePositionByDice,diceTiles,melds} =await rollDice();
     // console.log("throw count"+throwCount+"tilePositionDice"+tilePositionByDice+"dice tiles"+diceTiles+"melds"+melds);
-    if(currentPlayer === 1){ //Ensure the player is still ai and hasn't been switched to human
+    if(currentPlayer === 1){ //Ensure the player is still AI and hasn't been switched to human
         const meldCount = melds.reduce((acc, obj) => {
             acc.diceCount += obj.diceCount;
             acc.score += obj.score;
@@ -271,6 +274,7 @@ async function aiMove() {
                 alertDOM.innerHTML = "Ai banks 💲!";
                 await sleep(1000);
                 bankScore();
+
             }
         }
     }
@@ -390,15 +394,14 @@ function checkWinningCondition() {
     const winningScore = 10000;
 
     if (totalScorePlayer1 >= winningScore) {
-        alert("Congratulations! You win!");
+        showNotification("🎊", "Congratulations! You Won!");
         resetGame();
         return true;
     } else if (totalScoreAI >= winningScore) {
-        alert("AI wins! Better luck next time!");
+        showNotification("🤖", "AI wins! Better luck next time!");
         resetGame();
         return true;
-    }
-    else{
+    } else {
         return false;
     }
 }
@@ -417,4 +420,23 @@ function resetGame() {
     roundScoreDOM.innerHTML = roundScore;
     alertDOM.innerHTML = "New Game! Your Turn!";
     resetTiles(0);
+}
+function showNotification(icon, message) {
+    return new Promise((resolve) => {
+        const notificationBox = document.getElementById("notificationBox");
+        const notificationIcon = document.getElementById("notificationIcon");
+        const notificationMessage = document.getElementById("notificationMessage");
+        const okBro = document.getElementById("okBro");
+
+        notificationIcon.innerText = icon;
+        notificationMessage.innerText = message;
+
+        notificationBox.classList.remove("hidden");
+
+        // Add a click listener to dismiss the notification
+        okBro.addEventListener("click", () => {
+            notificationBox.classList.add("hidden");
+            resolve(); // Resolve the Promise when the user clicks
+        }, { once: true }); // The { once: true } ensures the event listener is removed after the first click
+    });
 }
