@@ -237,10 +237,10 @@ async function aiMove() {
         if(numberOfDices - playerSelectionCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
             alertDOM.innerHTML = "Ai is selecting...";
             await aiSelect(diceTiles);
-            await sleep(1000);
             tempScore =meldCount.score;
             console.log("ai: "+tempScore);
             alertDOM.innerHTML = "Ai rolls again!";
+            await sleep(1000);
             roll();
         }
         else {
@@ -254,10 +254,10 @@ async function aiMove() {
             if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
                 alertDOM.innerHTML = "Ai is selecting...";
                 await aiSelect(tiles);
-                await sleep(1000);
                 tempScore =meldCount.score;
                 console.log("ai: "+tempScore);
                 alertDOM.innerHTML = "Ai rolls again!";
+                await sleep(1000);
                 roll();
             }
             else {
