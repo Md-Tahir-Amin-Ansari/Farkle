@@ -12,6 +12,7 @@ let totalScorePlayer1DOM = document.getElementById("playerOneScore");
 let totalScoreAI = 0;
 let totalScoreAIDOM = document.getElementById("aiPlayerScore");
 let roundScoreDOM = document.getElementById("roundScore");
+let alertDOM = document.getElementById("alert");
 const scoringRules = {
     single: { 1: 100, 5: 50 }, // Single 1 and 5 have specific scores
     doubles: {1:200, 5:100},
@@ -22,55 +23,54 @@ const scoringRules = {
     fiveOfAKind: 2000,
     sixOfAKind: 3000,
 };
+function toggleMenu() {
+    const menu = document.getElementById('titleBarButtons');
+    const hamMenu = document.querySelector('.hamMenuToggle');
+    const menuOverlay = document.getElementById('menuOverlay');
+    menu.classList.toggle('visible');
+    hamMenu.classList.toggle('active');
+    menuOverlay.classList.toggle('visible');
+
+}
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 // document.getElementById("rollDice").addEventListener("click", rollDice);
-function rollDice() {
+async function rollDice() {
     // console.log("Clicked");
-    if (numberOfDices===0){
-        numberOfDices = 6;
-        alert("Hot Dice!");//A hot dice happens when you have selected all your active dice and are not farkled
-        //After a hot dice you get back all your dice back and roll again
-        tempScore =0;
-        if(currentPlayer===0) {
-            rollDice();
-        }else {
-            aiMove();
-        }
-    }
-    else{
-        let throwCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
-        let tilePositionByDice = {1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
-        resetTiles(0);
-        let diceTiles = shuflleTiles(numberOfDices);//these are the tiles randomly chosen to have a die
-        // console.log(diceTile);
-        for (let i = 0; i < numberOfDices; i++) {
-            let tileNo = diceTiles[i]//
-            // console.log("dice tile "+tile);
-            const tile = document.getElementById(`tile${tileNo}`);//gets the i th tile from randomly chosen 6 tiles
-            const roll = Math.floor(Math.random() * 6) + 1;
-            tile.dataset.value = roll;
-            throwCount[roll]++;
-            tilePositionByDice[roll].push(tileNo);
-            // console.log(dice.dataset.value);
-            // console.log("dice face "+roll);
-            tile.style.backgroundImage = `url('Dice/dice ${roll}.webp')`;
-            tile.style.transform = `rotate(${Math.random() * 360}deg)`;
 
-        }
-        // console.log(throwCount);
-        let melds = findMelds(throwCount);
-        if (melds.length === 0) {
-            // console.log("farkle")
-            isFarkle = true;
-            alert("Farkle!");
-            bankScore();
-        }
-        return {throwCount,tilePositionByDice,diceTiles,melds};
+    let throwCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
+    let tilePositionByDice = {1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
+    resetTiles(0);
+    let diceTiles = shuflleTiles(numberOfDices);//these are the tiles randomly chosen to have a die
+    // console.log(diceTile);
+    for (let i = 0; i < numberOfDices; i++) {
+        let tileNo = diceTiles[i]//
+        // console.log("dice tile "+tile);
+        const tile = document.getElementById(`tile${tileNo}`);//gets the i th tile from randomly chosen 6 tiles
+        const roll = Math.floor(Math.random() * 6) + 1;
+        tile.dataset.value = roll;
+        throwCount[roll]++;
+        tilePositionByDice[roll].push(tileNo);
+        // console.log(dice.dataset.value);
+        // console.log("dice face "+roll);
+        tile.style.backgroundImage = `url('Dice/dice ${roll}.webp')`;
+        tile.style.transform = `rotate(${Math.random() * 360}deg)`;
+
     }
+    // console.log(throwCount);
+    let melds = findMelds(throwCount);
+    if (melds.length === 0) {
+        await sleep(1000);
+        isFarkle = true;
+        alert("Farkle!");
+        bankScore();
+    }
+    return {throwCount, tilePositionByDice, diceTiles, melds};
+
 }
 //shuffled dice tile return an array of shuffled array of int corresponding dies tile
 
 function shuflleTiles(numberOfDices){
+
     let nums = [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16];
     let r = 0;
     let temp = 0;
@@ -103,31 +103,6 @@ function resetTiles(tileNumber){
 
 }
 document.getElementById("bankScore").addEventListener("click",bankScore );
-// function bankScore() {
-//     if(tempScore >0){
-//         totalScorePlayer1 += tempScore+roundScore;
-//         roundScore = 0;
-//         tempScore = 0;
-//         totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
-//         roundScoreDOM.innerHTML = 0;
-//         numberOfDices =6;
-//         alert("Next Player!");
-//         resetTiles(0);
-//         firstThrow = true;
-//         switchPlayer();
-//     }
-//     if (isFarkle){
-//         isFarkle = false;
-//         roundScore = 0;
-//         tempScore = 0;
-//         roundScoreDOM.innerHTML = 0;
-//         numberOfDices =6;
-//         alert("Next Player!");
-//         resetTiles(0);
-//         firstThrow = true;
-//         switchPlayer();
-//     }
-// }
 function bankScore() {
     if (tempScore > 0) {
         if (currentPlayer === 1) {
@@ -141,8 +116,8 @@ function bankScore() {
         tempScore = 0;
         numberOfDices = 6;
         roundScoreDOM.innerHTML = 0;
-        alert("Next Player!");
         resetTiles(0);
+        alert("Next Player!");
         firstThrow = true;
         switchPlayer();
     }
@@ -152,8 +127,8 @@ function bankScore() {
         tempScore = 0;
         roundScoreDOM.innerHTML = 0;
         numberOfDices = 6;
-        alert("Next Player!");
         resetTiles(0);
+        alert("Next Player!");
         firstThrow = true;
         switchPlayer();
     }
@@ -162,7 +137,7 @@ function bankScore() {
 
 document.getElementById("rollDice").addEventListener("click", roll);
 function roll(){
-    if (firstThrow) {
+    if (firstThrow && currentPlayer === 0) {
         rollDice();
         firstThrow = false;
     }
@@ -173,6 +148,13 @@ function roll(){
             roundScoreDOM.innerHTML = roundScore;
             numberOfDices -= playerSelectionCount;
             playerSelectionCount =0;
+            if (numberOfDices===0){
+                numberOfDices = 6;
+                //A hot dice happens when you have selected all your active dice and are not farkled
+                //After a hot dice you get back all your dice back and roll again
+                alertDOM.innerHTML = "HOT DICE!";
+                tempScore =0;
+            }
             rollDice();
         }
     }
@@ -183,6 +165,12 @@ function roll(){
             roundScoreDOM.innerHTML = roundScore;
             numberOfDices -= playerSelectionCount;
             playerSelectionCount =0;
+            if (numberOfDices===0){
+                numberOfDices = 6;
+                alertDOM.innerHTML = "HOT DICE!";//A hot dice happens when you have selected all your active dice and are not farkled
+                //After a hot dice you get back all your dice back and roll again
+                tempScore =0;
+            }
             aiMove();
         }
 
@@ -224,53 +212,65 @@ document.querySelectorAll('.tile').forEach(tile => {//Node value
 function switchPlayer() {
     currentPlayer = (currentPlayer === 0) ? 1 : 0;
     console.log(currentPlayer);
-    if (currentPlayer === 1) {
-        setTimeout(aiMove, 1000); // Add delay to simulate AI thinking
+    if(currentPlayer === 1){
+        aiMove();
+    }
+    else {
+        alertDOM.innerHTML = "Your Turn";
     }
 }
 
 async function aiMove() {
 // Your AI logic here
-
-    const {throwCount,tilePositionByDice,diceTiles,melds} = rollDice();
+    alertDOM.innerHTML = "Ai's Move";
+    await sleep(1000);
+    const {throwCount,tilePositionByDice,diceTiles,melds} =await rollDice();
     // console.log("throw count"+throwCount+"tilePositionDice"+tilePositionByDice+"dice tiles"+diceTiles+"melds"+melds);
-    const meldCount = melds.reduce((acc, obj) => {
-        acc.diceCount += obj.diceCount;
-        acc.score += obj.score;
-        return acc;
-    }, { diceCount: 0, score: 0 });
-    tempScore =0;
-    playerSelectionCount = meldCount.diceCount;
-    if(numberOfDices - playerSelectionCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
-        await aiSelect(diceTiles);
-        tempScore =meldCount.score;
-        console.log("ai: "+tempScore);
-        roll();
-        // console.log(diceTiles);
-    }
-    else {
-        let tiles = [];
-        melds.forEach((meld) =>{
-            tiles.push(...tilePositionByDice[meld.dice]);
-            // console.log(meld.dice);
-            // console.log(tilePositionByDice[meld.dice]);
-            console.log(tiles);
-        });
-        if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
-            await aiSelect(tiles);
-            // console.log(tiles);
+    if(currentPlayer === 1){ //Ensure the player is still ai and hasn't been switched to human
+        const meldCount = melds.reduce((acc, obj) => {
+            acc.diceCount += obj.diceCount;
+            acc.score += obj.score;
+            return acc;
+        }, { diceCount: 0, score: 0 });
+        tempScore =0;
+        playerSelectionCount = meldCount.diceCount;
+        if(numberOfDices - playerSelectionCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
+            alertDOM.innerHTML = "Ai is selecting...";
+            await aiSelect(diceTiles);
+            await sleep(1000);
             tempScore =meldCount.score;
             console.log("ai: "+tempScore);
+            alertDOM.innerHTML = "Ai rolls again!";
             roll();
         }
         else {
-            await aiSelect(tiles);
-            // console.log(tiles);
-            tempScore =meldCount.score;
-            console.log("ai: "+tempScore);
-            bankScore();
+            let tiles = [];
+            melds.forEach((meld) =>{
+                tiles.push(...tilePositionByDice[meld.dice]);
+                // console.log(meld.dice);
+                // console.log(tilePositionByDice[meld.dice]);
+                console.log(tiles);
+            });
+            if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
+                alertDOM.innerHTML = "Ai is selecting...";
+                await aiSelect(tiles);
+                await sleep(1000);
+                tempScore =meldCount.score;
+                console.log("ai: "+tempScore);
+                alertDOM.innerHTML = "Ai rolls again!";
+                roll();
+            }
+            else {
+                await aiSelect(tiles);
+                tempScore =meldCount.score;
+                console.log("ai: "+tempScore);
+                alertDOM.innerHTML = "Ai banks!";
+                await sleep(1000);
+                bankScore();
+            }
         }
     }
+
 
     //if after selecting meld >=4 dice left or 0 dice (run, triple pairs, six of a kind and hot die) left = re - roll;
     //if after selecting meld <4 dice left = bank;
@@ -372,4 +372,13 @@ function isValidMeld(meld,occurrenceOfValue){
         return 0;
     }
 
+}
+
+function logFunctionName() {
+    try { throw new Error();
+    }
+    catch (e) {
+        const stack = e.stack.split("\n");
+        console.log(stack[2].trim().split(" ")[1]);
+    }
 }

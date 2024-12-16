@@ -8,8 +8,27 @@
     <script src="JavaScript/app.js" defer></script>
 </head>
 <body>
+<header class="header" id="header">
+    <div id="hero">
+        <a href="" class="buttons">Farkle!</a>
+        <span class="overlay" id="menuOverlay"></span>
+    </div>
+    <button class="hamMenuToggle" onclick="toggleMenu()">
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+        <!--        <span class="overlay" id="menuOverlay"></span>-->
+    </button>
+    <div id="titleBarButtons" class="hidden">
+        <a href="" class="buttons" onclick="toggleMenu()">Placeholder</a>
+        <a href="" class="buttons" onclick="toggleMenu()">Placeholder</a>
+        <a href="" class="buttons" onclick="toggleMenu()">Placeholder</a>
+        <a href="" class="buttons" onclick="toggleMenu()">Placeholder</a>
+        <a href="" class="buttons" onclick="toggleMenu()">Placeholder</a>
+    </div>
+</header>
 <div class="centralView">
-    <div id="diceReserveArea" class="reserveArea"></div>
+<!--    <div id="diceReserveArea" class="reserveArea"></div>-->
     <div id="boardOutside">
 
 
@@ -34,16 +53,17 @@
 
     </div>
     <div id="infoReserveArea" class="reserveArea">
-        <div id="playerOneInfo" class="playerInfo">
-            <div id="playerOneName">Player One</div>
-            <div id="playerOneScore">Score</div>
-            <div id="aiPlayer">Computer</div>
-            <div id="aiPlayerScore">Score</div>
-            <div id="roundScore">Round Score</div>
-        </div>
+        <div id="alert" class="sp gridItem sp1">Alert!</div>
+        <div id="playerOneName" class="gridItem">Player One</div>
+        <div id="playerOneScore" class="gridItem">Score</div>
+        <div id="aiPlayer" class="gridItem">Computer</div>
+        <div id="aiPlayerScore" class="gridItem">Score</div>
+        <div id="roundScore" class="sp gridItem sp1">Round Score</div>
+<!--        sp full column span in pc sp1 full column span in mobile-->
+        <button class="actionButton sp gridItem" id="rollDice">Roll Dice</button>
+        <button class="actionButton sp gridItem" id="bankScore">Bank Score</button>
     </div>
 </div>
-<button class="actionButton" id="rollDice">Roll Dice</button>
-<button class="actionButton" id="bankScore">Bank Score</button>
+
 </body>
 </html>
