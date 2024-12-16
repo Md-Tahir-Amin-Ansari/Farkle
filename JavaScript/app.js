@@ -117,9 +117,11 @@ function bankScore() {
         numberOfDices = 6;
         roundScoreDOM.innerHTML = 0;
         resetTiles(0);
-        alert("Next Player!");
-        firstThrow = true;
-        switchPlayer();
+        if(!checkWinningCondition()){
+            alert("Next Player!");
+            firstThrow = true;
+            switchPlayer();
+        }
     }
     if (isFarkle) {
         isFarkle = false;
@@ -128,9 +130,11 @@ function bankScore() {
         roundScoreDOM.innerHTML = 0;
         numberOfDices = 6;
         resetTiles(0);
-        alert("Next Player!");
-        firstThrow = true;
-        switchPlayer();
+        if(!checkWinningCondition()){
+            alert("Next Player!");
+            firstThrow = true;
+            switchPlayer();
+        }
     }
 }
 
@@ -222,7 +226,7 @@ function switchPlayer() {
 
 async function aiMove() {
 // Your AI logic here
-    alertDOM.innerHTML = "Ai's Move";
+    alertDOM.innerHTML = "🤖 Ai's Move";
     await sleep(1000);
     const {throwCount,tilePositionByDice,diceTiles,melds} =await rollDice();
     // console.log("throw count"+throwCount+"tilePositionDice"+tilePositionByDice+"dice tiles"+diceTiles+"melds"+melds);
@@ -235,11 +239,11 @@ async function aiMove() {
         tempScore =0;
         playerSelectionCount = meldCount.diceCount;
         if(numberOfDices - playerSelectionCount ===0){ //this means a resulting hot die which makes holding a no-brainer for AI
-            alertDOM.innerHTML = "Ai is selecting...";
+            alertDOM.innerHTML = "Ai is selecting👆...";
             await aiSelect(diceTiles);
             tempScore =meldCount.score;
             console.log("ai: "+tempScore);
-            alertDOM.innerHTML = "Ai rolls again!";
+            alertDOM.innerHTML = "Ai rolls 🎲 again!";
             await sleep(1000);
             roll();
         }
@@ -252,11 +256,11 @@ async function aiMove() {
                 console.log(tiles);
             });
             if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
-                alertDOM.innerHTML = "Ai is selecting...";
+                alertDOM.innerHTML = "Ai is selecting👆...";
                 await aiSelect(tiles);
                 tempScore =meldCount.score;
                 console.log("ai: "+tempScore);
-                alertDOM.innerHTML = "Ai rolls again!";
+                alertDOM.innerHTML = "Ai rolls 🎲 again!";
                 await sleep(1000);
                 roll();
             }
@@ -264,7 +268,7 @@ async function aiMove() {
                 await aiSelect(tiles);
                 tempScore =meldCount.score;
                 console.log("ai: "+tempScore);
-                alertDOM.innerHTML = "Ai banks!";
+                alertDOM.innerHTML = "Ai banks 💲!";
                 await sleep(1000);
                 bankScore();
             }
@@ -381,4 +385,36 @@ function logFunctionName() {
         const stack = e.stack.split("\n");
         console.log(stack[2].trim().split(" ")[1]);
     }
+}
+function checkWinningCondition() {
+    const winningScore = 10000;
+
+    if (totalScorePlayer1 >= winningScore) {
+        alert("Congratulations! You win!");
+        resetGame();
+        return true;
+    } else if (totalScoreAI >= winningScore) {
+        alert("AI wins! Better luck next time!");
+        resetGame();
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+function resetGame() {
+    totalScorePlayer1 = 0;
+    totalScoreAI = 0;
+    roundScore = 0;
+    tempScore = 0;
+    numberOfDices = 6;
+    firstThrow = true;
+    currentPlayer = 0; // Start with the human player
+
+    // Update the DOM
+    totalScorePlayer1DOM.innerHTML = totalScorePlayer1;
+    totalScoreAIDOM.innerHTML = totalScoreAI;
+    roundScoreDOM.innerHTML = roundScore;
+    alertDOM.innerHTML = "New Game! Your Turn!";
+    resetTiles(0);
 }
