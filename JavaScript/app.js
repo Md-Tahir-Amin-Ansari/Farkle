@@ -407,7 +407,7 @@ function logFunctionName() {
     }
 }
 function checkWinningCondition() {
-    const winningScore = 100;
+    const winningScore = 10000;
 
     if (totalScorePlayer1 >= winningScore) {
         showNotification("🎊", "Congratulations! You Won!","Music/humanWin.mp3");
