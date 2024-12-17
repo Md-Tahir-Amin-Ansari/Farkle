@@ -1,3 +1,4 @@
+let isMusicOn = true;
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
 let playerSelectionCount =0;
@@ -12,6 +13,8 @@ let totalScoreAI = 0;
 let totalScoreAIDOM = document.getElementById("aiPlayerScore");
 let roundScoreDOM = document.getElementById("roundScore");
 let alertDOM = document.getElementById("alert");
+let BGM = document.getElementById("BGM");
+let toggleBGM = document.getElementById("toggleBGM");
 const scoringRules = {
     single: { 1: 100, 5: 50 }, // Single 1 and 5 have specific scores
     doubles: {1:200, 5:100},
@@ -234,6 +237,15 @@ async function aiMove() {
     const {throwCount,tilePositionByDice,diceTiles,melds} =await rollDice();
     // console.log("throw count"+throwCount+"tilePositionDice"+tilePositionByDice+"dice tiles"+diceTiles+"melds"+melds);
     if(currentPlayer === 1){ //Ensure the player is still AI and hasn't been switched to human
+        let threshold = 3;//threshold changes dynamically
+        if((totalScorePlayer1-totalScoreAI)>=2000){
+            threshold = 2;//if at least 2 dice left after selecting
+        }else if((totalScoreAI-totalScorePlayer1)>=2000){
+            threshold = 4;
+        }
+        else {
+            threshold = 3;
+        }
         const meldCount = melds.reduce((acc, obj) => {
             acc.diceCount += obj.diceCount;
             acc.score += obj.score;
@@ -258,7 +270,7 @@ async function aiMove() {
                 // console.log(tilePositionByDice[meld.dice]);
                 console.log(tiles);
             });
-            if(numberOfDices - playerSelectionCount >3){//more than 3 dice left: it's safe to re roll
+            if(numberOfDices - playerSelectionCount >threshold){//more than 3 dice left: it's safe to re roll
                 alertDOM.innerHTML = "Ai is selecting👆...";
                 await aiSelect(tiles);
                 tempScore =meldCount.score;
@@ -440,3 +452,20 @@ function showNotification(icon, message) {
         }, { once: true }); // The { once: true } ensures the event listener is removed after the first click
     });
 }
+//start BGM music for the first time
+document.addEventListener("DOMContentLoaded", () => {
+    isMusicOn =true;
+    BGM.play();
+});
+//play or pause BGM music
+toggleBGM.addEventListener("click", () => {
+   isMusicOn = !isMusicOn;
+   if (isMusicOn){
+       BGM.play();
+       toggleBGM.innerHTML = "Turn off Music🎵"
+
+   }else {
+       BGM.pause();
+       toggleBGM.innerHTML = "Turn on Music🎵"
+   }
+});
