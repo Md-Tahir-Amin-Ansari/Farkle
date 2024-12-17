@@ -39,9 +39,11 @@ const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 async function rollDice() {
     // console.log("Clicked");
 
+
     let throwCount = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0};
     let tilePositionByDice = {1: [], 2: [], 3: [], 4: [], 5: [], 6: []};
     resetTiles(0);
+    await playSoundEffectAndWait("Music/diceRoll.mp3");
     let diceTiles = shuflleTiles(numberOfDices);//these are the tiles randomly chosen to have a die
     // console.log(diceTile);
     for (let i = 0; i < numberOfDices; i++) {
@@ -64,12 +66,13 @@ async function rollDice() {
         await sleep(1000);
         isFarkle = true;
         if (currentPlayer===0){
-            await showNotification("😢", "Farkle! No valid melds.");
+            await showNotification("😢", "Farkle! No valid melds.","Music/Farkle.mp3");
+
         }
         else {
-            await showNotification("🤖", "Ai Farkled!");
-        }
+            await showNotification("🤖", "Ai Farkled!","Music/Farkle.mp3");
 
+        }
         bankScore();
         return;
     }
@@ -114,6 +117,7 @@ function resetTiles(tileNumber){
 document.getElementById("bankScore").addEventListener("click",bankScore );
 async function bankScore() {
     if (tempScore > 0) {//this is because a farkle only happens when temp score is zero so in case of farkle it won't trigger
+        playSoundEffect("Music/bank.mp3");
         if (currentPlayer === 1) {
             totalScoreAI += tempScore + roundScore;
             totalScoreAIDOM.innerHTML = totalScoreAI;
@@ -128,7 +132,7 @@ async function bankScore() {
         resetTiles(0);
         if (!checkWinningCondition()) {//because a victory only happens in a successful bank not on farkle
             firstThrow = true;
-            switchPlayer();
+            await switchPlayer();
         }
     }
     if (isFarkle) {
@@ -139,46 +143,46 @@ async function bankScore() {
         numberOfDices = 6;
         resetTiles(0);
         firstThrow = true;
-        switchPlayer();
+        await switchPlayer();
     }
 }
 
 
 document.getElementById("rollDice").addEventListener("click", roll);
-function roll(){
+async function roll() {
     if (firstThrow && currentPlayer === 0) {
         rollDice();
         firstThrow = false;
     }
-    if(currentPlayer === 0){
+    if (currentPlayer === 0) {
         if (tempScore > 0) {
             roundScore += tempScore;
             tempScore = 0;
             roundScoreDOM.innerHTML = roundScore;
             numberOfDices -= playerSelectionCount;
-            playerSelectionCount =0;
-            if (numberOfDices===0){
+            playerSelectionCount = 0;
+            if (numberOfDices === 0) {
                 numberOfDices = 6;
                 //A hot dice happens when you have selected all your active dice and are not farkled
                 //After a hot dice you get back all your dice back and roll again
                 alertDOM.innerHTML = "HOT DICE!🔥🔥";
-                tempScore =0;
+                await showNotification("🔥", "HOT DICE!🔥🔥", "Music/hotDice.mp3");
+                tempScore = 0;
             }
             rollDice();
         }
-    }
-    else {
+    } else {
         if (tempScore > 0) {
             roundScore += tempScore;
             tempScore = 0;
             roundScoreDOM.innerHTML = roundScore;
             numberOfDices -= playerSelectionCount;
-            playerSelectionCount =0;
-            if (numberOfDices===0){
+            playerSelectionCount = 0;
+            if (numberOfDices === 0) {
                 numberOfDices = 6;
                 alertDOM.innerHTML = "HOT DICE!";//A hot dice happens when you have selected all your active dice and are not farkled
                 //After a hot dice you get back all your dice back and roll again
-                tempScore =0;
+                tempScore = 0;
             }
             aiMove();
         }
@@ -403,14 +407,15 @@ function logFunctionName() {
     }
 }
 function checkWinningCondition() {
-    const winningScore = 10000;
+    const winningScore = 100;
 
     if (totalScorePlayer1 >= winningScore) {
-        showNotification("🎊", "Congratulations! You Won!");
+        showNotification("🎊", "Congratulations! You Won!","Music/humanWin.mp3");
+        confetti({zIndex:2000});
         resetGame();
         return true;
     } else if (totalScoreAI >= winningScore) {
-        showNotification("🤖", "AI wins! Better luck next time!");
+        showNotification("🤖", "AI wins! Better luck next time!","Music/robot.mp3");
         resetGame();
         return true;
     } else {
@@ -433,7 +438,7 @@ function resetGame() {
     alertDOM.innerHTML = "New Game! Your Turn!";
     resetTiles(0);
 }
-function showNotification(icon, message) {
+function showNotification(icon, message,sound) {
     return new Promise((resolve) => {
         const notificationBox = document.getElementById("notificationBox");
         const notificationIcon = document.getElementById("notificationIcon");
@@ -444,6 +449,7 @@ function showNotification(icon, message) {
         notificationMessage.innerText = message;
 
         notificationBox.classList.remove("hidden");
+        playSoundEffect(sound);
 
         // Add a click listener to dismiss the notification
         okBro.addEventListener("click", () => {
@@ -469,3 +475,15 @@ toggleBGM.addEventListener("click", () => {
        toggleBGM.innerHTML = "Turn on Music🎵"
    }
 });
+function playSoundEffectAndWait(filePath) {
+    return new Promise((resolve) => {
+        const sound = new Audio(filePath);
+        sound.play();
+        sound.addEventListener("ended", resolve); // Resolve when the sound ends
+    });
+}
+function playSoundEffect(filePath) {
+    const sound = new Audio(filePath); // Create a new Audio object
+    sound.play();
+
+}
