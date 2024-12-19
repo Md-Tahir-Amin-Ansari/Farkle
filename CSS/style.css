@@ -24,7 +24,7 @@ a {
     border-radius: 1rem;
     text-align: center;
     box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2);
-    z-index: 1000;
+    z-index: 900;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -59,10 +59,11 @@ header{
     align-items: center;
     padding: 0.1rem 1rem;
     background-color:  #84240c;
-    /*position: fixed;*/
+    position: fixed;
     width: 100%;
-    height: 7%;
-    /*z-index: 1000;*/
+    height: 3.8rem;
+    /*height: 7%;*/
+    z-index: 500;
 }
 header a {
     color: #E2E8F0;
@@ -82,21 +83,64 @@ header a:hover {
     html {
         background: url('../Images/board-image.webp') no-repeat center center fixed;
         background-size: cover;
-        height: 100%;
+        /*height: 100%;*/
         font-size: 16px;
     }
 
     body {
         font-family: 'Pinewood', cursive;
-        height: 100%;
+        color: #84240c;
+        /*height: 100%;*/
         background: none;
         display: flex;
         flex-direction: column;
         flex-wrap: wrap;
     }
-
+    .scrollable_section {
+        font-size: x-large;
+        flex-direction: column;
+        display: flex;
+        align-items: flex-start;
+        margin: 1rem;
+        padding: 1rem;
+    }
+    .scrollable_section h1, h2, h3, h4, h5, h6 {
+        width: 100%;
+        text-align: center;
+        margin: 1rem;
+        padding: 1rem;
+    }
+    .scrollable_section li {
+        list-style-type: disc;
+        margin: 0.5rem;
+    }
+    .scrollable_section div{
+        width: 100%;
+        text-align: left;
+        margin: .7rem;
+        padding: .7rem;
+    }
+    .rules{
+        display: flex;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+    }
+    table tr td{
+        width: 30rem;
+        text-align: center;
+        padding: 1rem;
+        margin:1rem;
+    }
+    .exampleImage{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
     .centralView {
-        height: 93%;
+        /*height: 93%;*/
+        top: 3.8rem;
+        position: fixed;
         width: 100%;
         display: flex;
         flex-direction: row;
@@ -118,7 +162,6 @@ header a:hover {
     }
 
     .reserveArea {
-        color: #84240c;
         width: 18rem;
         height: 28rem;
         font-size: x-large;
@@ -211,7 +254,7 @@ header a:hover {
         justify-content: center;
         align-items: center;
         position: absolute;
-        top: 7%;
+        top: 3.8rem;
         right: 0;
         z-index: 2;
         height: 0;
@@ -239,7 +282,14 @@ header a:hover {
         font-size: 12px;
         background: url('../Images/dark-wood.webp') no-repeat center center fixed;
     }
-
+    body {
+        color: white;
+        font-family: 'Casino', serif;
+    }
+    .exampleImage img {
+        height: 30%;
+        width: 80%;
+    }
     .centralView {
         justify-content: space-between;
         flex-direction: column;
@@ -263,8 +313,6 @@ header a:hover {
     }
 
     .reserveArea {
-        color: white;
-        font-family: 'Casino', serif;
         width: 100%;
         grid-template-columns: repeat(2, 1fr);
         grid-template-rows: repeat(4, 1fr);
@@ -284,7 +332,7 @@ header a:hover {
 }
 
 /* Special Case: Landscape with height less than 700px */
-@media (max-height: 700px) and (orientation: landscape) {
+@media (max-height: 800px) and (orientation: landscape) {
     .centralView {
         flex-direction: row;
     }

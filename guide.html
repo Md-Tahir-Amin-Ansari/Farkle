@@ -2,9 +2,142 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play Farkle</title>
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-Guide
+<audio id="BGM"  src="Music/bgm.mp3" loop></audio>
+<header class="header" id="header">
+    <div id="hero">
+        <a href="index.html" class="buttons">Farkle!</a>
+        <span class="overlay" id="menuOverlay"></span>
+    </div>
+    <button class="hamMenuToggle" onclick="toggleMenu()">
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+    </button>
+    <div id="titleBarButtons" class="hidden">
+        <a href="guide.html" class="buttons" onclick="toggleMenu()">How To Play📗</a>
+        <a id="toggleBGM" class="buttons" onclick="toggleMenu()">Turn off Music🎵</a>
+        <a href="#" class="buttons" onclick="toggleMenu()">About❔</a>
+    </div>
+</header>
+<div class="scrollable_section">
+    <h1>How to Play Farkle</h1>
+    <div>
+        Welcome to Farkle🎲! The goal is to score 10,000 points as quickly as possible by rolling six dice and choosing scoring combinations. Be careful, though—if you roll and get no scoring dice, you "Farkle" and lose your points for that turn!
+    </div>
+    <h3>Game Setup</h3>
+    <div>
+        1. You and the computer take turns rolling the dice.
+    </div>
+    <div>
+        2. On your turn, roll all six dice by clicking "Roll Dice" .
+    </div>
+    <div>
+        3. The dice will appear on the screen and then you can select the dice by clicking on them.
+    </div>
+    <h3>Gameplay Rules</h3>
+    <div>After rolling, check the dice for scoring combinations based on the chart below: </div>
+    <div class="rules">
+    <table>
+        <tr>
+            <td>Melds</td>
+            <td>Scoring</td>
+        </tr>
+        <tr>
+            <td>1 x &#9856</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td>1 x &#x2684</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>3 x &#9856</td>
+            <td>1000</td>
+        </tr>
+        <tr>
+            <td>3 x &#x2681</td>
+            <td>200</td>
+        </tr>
+        <tr>
+            <td>3 x &#x2682</td>
+            <td>300</td>
+        </tr>
+        <tr>
+            <td>3 x &#x2683</td>
+            <td>400</td>
+        </tr>
+        <tr>
+            <td>3 x &#x2684</td>
+            <td>500</td>
+        </tr>
+        <tr>
+            <td>3 x &#x2685</td>
+            <td>600</td>
+        </tr>
+        <tr>
+            <td>Three Pairs</td>
+            <td>1500</td>
+        </tr>
+        <tr>
+            <td>Straight <br>(&#9856 &#x2681 &#x2682 &#x2683 &#x2684 &#x2685)</td>
+            <td>1500</td>
+        </tr>
+        <tr>
+            <td>Four of a kind</td>
+            <td>1000</td>
+        </tr>
+        <tr>
+            <td>Five of a Kind</td>
+            <td>2000</td>
+        </tr>
+        <tr>
+            <td>Six of a kind</td>
+            <td>3000</td>
+        </tr>
+    </table>
+    </div>
+    <h3>Choose Scoring Dice:</h3>
+    <div>
+        4. After rolling, identify which dice are part of a scoring combination.
+    </div>
+    <div class="exampleImage">
+        <img src="Images/example-dice-selection.webp" alt="Example of Dice selection">
+    </div>
+    <div>
+        5. For example the above image shows all the possible combination. Here, we have triple 4's for 400 and a single 5 for 50. So total for 450.
+    </div>
+    <h3>Bank or Roll Again:</h3>
+    <div>
+        6. After scoring, you have two options:
+        <ul>
+            <li>Bank Score : Click the "Bank Score" button to save your points for the turn and end your turn.  </li>
+            <li>Roll Dice : Click the "Roll Dice" button to roll the remaining dice and try to score more points.</li>
+        </ul>
+    </div>
+    <div>⚠ Be careful: If you roll and get no scoring dice, you <i>Farkle</i> and lose all points for that turn!</div>
+    <h3>Turn Ends When :</h3>
+    <div>
+       7. Your turn ends when you either:
+        <ul>
+            <li>Bank your score.</li>
+            <li>Roll and get no scoring dice <i>(Farkle)</i>.</li>
+        </ul>
+    </div>
+    <h3>Tips for Success</h3>
+    <div>
+        <ul>
+            <li>Be strategic! Bank your score when you feel the risk of Farkling is too high.</li>
+            <li>Look for combinations like Triples or Straights to maximize points.</li>
+            <li>Don't be too greedy—sometimes it's better to bank a small score than lose everything!</li>
+        </ul>
+    </div>
+</div>
+
+<script src="JavaScript/app.js" defer></script>
 </body>
 </html>

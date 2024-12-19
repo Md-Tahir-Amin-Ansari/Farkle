@@ -1,4 +1,24 @@
+let BGM = document.getElementById("BGM");
+let toggleBGM = document.getElementById("toggleBGM");
 let isMusicOn = true;
+//start BGM music for the first time
+document.addEventListener("DOMContentLoaded", () => {
+    isMusicOn =true;
+    BGM.play();
+});
+//play or pause BGM music
+toggleBGM.addEventListener("click", () => {
+    isMusicOn = !isMusicOn;
+    if (isMusicOn){
+        BGM.play();
+        toggleBGM.innerHTML = "Turn off Music🎵"
+
+    }else {
+        BGM.pause();
+        toggleBGM.innerHTML = "Turn on Music🎵"
+    }
+});
+
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
 let playerSelectionCount =0;
@@ -13,8 +33,6 @@ let totalScoreAI = 0;
 let totalScoreAIDOM = document.getElementById("aiPlayerScore");
 let roundScoreDOM = document.getElementById("roundScore");
 let alertDOM = document.getElementById("alert");
-let BGM = document.getElementById("BGM");
-let toggleBGM = document.getElementById("toggleBGM");
 const scoringRules = {
     single: { 1: 100, 5: 50 }, // Single 1 and 5 have specific scores
     doubles: {1:200, 5:100},
@@ -458,23 +476,7 @@ function showNotification(icon, message,sound) {
         }, { once: true }); // The { once: true } ensures the event listener is removed after the first click
     });
 }
-//start BGM music for the first time
-document.addEventListener("DOMContentLoaded", () => {
-    isMusicOn =true;
-    BGM.play();
-});
-//play or pause BGM music
-toggleBGM.addEventListener("click", () => {
-   isMusicOn = !isMusicOn;
-   if (isMusicOn){
-       BGM.play();
-       toggleBGM.innerHTML = "Turn off Music🎵"
 
-   }else {
-       BGM.pause();
-       toggleBGM.innerHTML = "Turn on Music🎵"
-   }
-});
 function playSoundEffectAndWait(filePath) {
     return new Promise((resolve) => {
         const sound = new Audio(filePath);
