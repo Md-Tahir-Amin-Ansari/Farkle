@@ -2,9 +2,63 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farkle!🎲</title>
+    <link rel="stylesheet" href="CSS/style.css">
 </head>
 <body>
-
+<audio id="BGM"  src="Music/bgm.mp3" loop></audio>
+<header class="header" id="header">
+    <div id="hero">
+        <a href="index.html" class="buttons">Farkle!</a>
+        <span class="overlay" id="menuOverlay"></span>
+    </div>
+    <button class="hamMenuToggle" onclick="toggleMenu()">
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+        <span class="hamMenuLine"></span>
+    </button>
+    <div id="titleBarButtons" class="hidden">
+        <a href="guide.html" class="buttons" onclick="toggleMenu()">How To Play📗</a>
+        <a id="toggleBGM" class="buttons" onclick="toggleMenu()">Turn off Music🎵</a>
+        <a href="#" class="buttons" onclick="toggleMenu()">About❔</a>
+    </div>
+</header>
+<div class="scrollable_section">
+    <h1>About</h1>
+    <div>Hello! My name is Md. Tahir Amin Ansari, and this project is
+        a digital adaptation of the classic dice game, Farkle.
+        I developed it as a way to practice my JavaScript skills and
+        to better understand game development concepts.
+    </div>
+    <div>
+        The inspiration for this project came from a version of Farkle
+        featured in the game Kingdom Come: Deliverance (KCD). I loved
+        the strategic yet simple gameplay and wanted to recreate that
+        experience while adding my own twist with custom scoring rules.
+    </div>
+    <div>
+        This project was built using HTML, CSS, and JavaScript, and
+        I used WebStorm IDE for development. It includes features like:
+    </div>
+    <ul>
+        <li>A custom scoring system tailored for a fun and unique gameplay experience.</li>
+        <li>An interactive user interface designed to be intuitive and visually appealing.</li>
+    </ul>
+    <h3>Future Plans</h3>
+    <div>In the future, I’d love to expand this project with features like:</div>
+    <ul>
+        <li>Multiplayer functionality (both local and online).</li>
+        <li>Animations for dice rolls and scoring updates.</li>
+        <li>A scoring history feature to track progress.</li>
+    </ul>
+    <h3>Feedback and Collaboration</h3>
+    <div>
+        If you have suggestions, feedback, or ideas for collaboration, feel free to reach out! You can also check out the source code for this project on GitHub.
+        <br>
+        Thank you for checking out my project, and I hope you enjoy playing this version of Farkle as much as I enjoyed creating it!
+    </div>
+</div>
+<script src="JavaScript/app.js" defer></script>
 </body>
 </html>
