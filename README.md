@@ -51,3 +51,8 @@ Here’s what’s next for Farkle:
 - ✨ Include animations for dice rolls and scoring updates.
 - 📊 Implement a scoring history feature.
 
+## 🎥 Live Demo
+Check out the live demo and explanation of the project on YouTube:  
+[![Watch the video](https://img.youtube.com/vi/nvWUTFZrV5I/0.jpg)](https://youtu.be/nvWUTFZrV5I?si=5xZmkRaDa6YsJT9x)
+
+---
