@@ -1,23 +1,59 @@
+// let BGM = document.getElementById("BGM");
+// let toggleBGM = document.getElementById("toggleBGM");
+// let isMusicOn = true;
+// //start BGM music for the first time
+// document.addEventListener("DOMContentLoaded", () => {
+//     isMusicOn =true;
+//     BGM.play();
+// });
+// //play or pause BGM music
+// toggleBGM.addEventListener("click", () => {
+//     isMusicOn = !isMusicOn;
+//     if (isMusicOn){
+//         BGM.play();
+//         toggleBGM.innerHTML = "Turn off Music🎵"
+//
+//     }else {
+//         BGM.pause();
+//         toggleBGM.innerHTML = "Turn on Music🎵"
+//     }
+// });
 let BGM = document.getElementById("BGM");
 let toggleBGM = document.getElementById("toggleBGM");
-let isMusicOn = true;
-//start BGM music for the first time
-document.addEventListener("DOMContentLoaded", () => {
-    isMusicOn =true;
-    BGM.play();
-});
-//play or pause BGM music
-toggleBGM.addEventListener("click", () => {
-    isMusicOn = !isMusicOn;
-    if (isMusicOn){
-        BGM.play();
-        toggleBGM.innerHTML = "Turn off Music🎵"
 
-    }else {
-        BGM.pause();
-        toggleBGM.innerHTML = "Turn on Music🎵"
+// Check localStorage for music preference
+document.addEventListener("DOMContentLoaded", () => {
+    const storedPreference = localStorage.getItem("isMusicOn");
+    if (storedPreference === null) {
+        // Default to music on if no preference is stored
+        localStorage.setItem("isMusicOn", "true");
+        BGM.play();
+        toggleBGM.innerHTML = "Turn off Music🎵";
+    } else {
+        isMusicOn = storedPreference === "true";
+        if (isMusicOn) {
+            BGM.play();
+            toggleBGM.innerHTML = "Turn off Music🎵";
+        } else {
+            BGM.pause();
+            toggleBGM.innerHTML = "Turn on Music🎵";
+        }
     }
 });
+
+// Play or pause BGM music and update localStorage
+toggleBGM.addEventListener("click", () => {
+    isMusicOn = !isMusicOn;
+    localStorage.setItem("isMusicOn", isMusicOn.toString());
+    if (isMusicOn) {
+        BGM.play();
+        toggleBGM.innerHTML = "Turn off Music🎵";
+    } else {
+        BGM.pause();
+        toggleBGM.innerHTML = "Turn on Music🎵";
+    }
+});
+
 
 let currentPlayer = 0; //0 === human 1=== AI
 let firstThrow = true;
